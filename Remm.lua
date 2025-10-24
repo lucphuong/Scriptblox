@@ -1,1 +1,1 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/lucphuong/Scriptblox/refs/heads/main/Remm.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/coolkidvietnam/Scripttonghop/refs/heads/main/README.md"))()
