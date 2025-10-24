@@ -1,1 +1,1 @@
-game.Players.LocalPlayer:Kick("Địt mẹ mày")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/lucphuong/Scriptblox/refs/heads/main/Remm.lua"))()
