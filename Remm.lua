@@ -1,7 +1,5 @@
 -- DEVIL CUSTOM MENU — Integrations version
--- Paste into executor (client). Loads many external scripts via HttpGet (pcall-wrapped).
 pcall(function()
-    -- ===== Services =====
     local Players = game:GetService("Players")
     local UserInputService = game:GetService("UserInputService")
     local RunService = game:GetService("RunService")
@@ -15,7 +13,6 @@ pcall(function()
     local player = Players.LocalPlayer
     if not player then return end
 
-    -- ===== Resource tracking =====
     local created = {}
     local connections = {}
     local function regObj(o) if o then table.insert(created, o) end; return o end
@@ -26,24 +23,20 @@ pcall(function()
         connections = {}; created = {}
     end
 
-    -- ===== UI constants =====
     local BG = Color3.fromRGB(18,18,18)
     local ACC = Color3.fromRGB(0,150,255)
     local TEXT = Color3.fromRGB(230,230,230)
     local TRANSP = 0.45
 
-    -- Remove any previous instance to avoid dupes on re-run
     for _, g in ipairs(CoreGui:GetChildren()) do
         if g.Name == "DevilCustomMenu" then pcall(function() g:Destroy() end) end
     end
 
-    -- ===== Root UI =====
     local screen = regObj(Instance.new("ScreenGui"))
     screen.Name = "DevilCustomMenu"
     screen.ResetOnSpawn = false
     screen.Parent = CoreGui
 
-    -- Floating toggle button
     local floatBtn = regObj(Instance.new("TextButton"))
     floatBtn.Name = "DevilToggle"
     floatBtn.Parent = screen
@@ -57,19 +50,17 @@ pcall(function()
     floatBtn.TextColor3 = Color3.new(1,1,1)
     regObj(Instance.new("UICorner", floatBtn)).CornerRadius = UDim.new(0,10)
 
-    -- Main window - CENTERED ON SCREEN
-    local baseW, baseH = 460, 400 -- Increased height for boombox
+    local baseW, baseH = 460, 400
     local frame = regObj(Instance.new("Frame"))
     frame.Name = "MainWindow"
     frame.Size = UDim2.new(0, baseW, 0, baseH)
-    frame.Position = UDim2.new(0.5, -baseW/2, 0.5, -baseH/2) -- Centered
+    frame.Position = UDim2.new(0.5, -baseW/2, 0.5, -baseH/2)
     frame.BackgroundColor3 = BG
     frame.BackgroundTransparency = TRANSP
     frame.BorderSizePixel = 0
     frame.Parent = screen
     regObj(Instance.new("UICorner", frame)).CornerRadius = UDim.new(0,8)
 
-    -- Titlebar (drag + controls)
     local titleBar = regObj(Instance.new("Frame"))
     titleBar.Parent = frame
     titleBar.Size = UDim2.new(1,0,0,32)
@@ -101,7 +92,6 @@ pcall(function()
         regObj(Instance.new("UICorner", b)).CornerRadius = UDim.new(0,6)
     end
 
-    -- Tab bar (top) - ADDED BOOMBOX TAB
     local tabBar = regObj(Instance.new("Frame"))
     tabBar.Parent = frame
     tabBar.Size = UDim2.new(1,0,0,36)
@@ -113,28 +103,25 @@ pcall(function()
     for i,name in ipairs(tabNames) do
         local btn = regObj(Instance.new("TextButton"))
         btn.Parent = tabBar
-        btn.Size = UDim2.new(0,80,1,0) -- Smaller width to fit all tabs
+        btn.Size = UDim2.new(0,80,1,0)
         btn.Position = UDim2.new(0,(i-1)*80,0,0)
         btn.Text = name
         btn.Font = Enum.Font.GothamBold
-        btn.TextSize = 12 -- Smaller text
+        btn.TextSize = 12
         btn.BackgroundTransparency = 1
         btn.TextColor3 = TEXT
         tabButtons[i] = btn
     end
 
-    -- Body
     local body = regObj(Instance.new("Frame"))
     body.Parent = frame
     body.Position = UDim2.new(0,8,0,76)
     body.Size = UDim2.new(1,-16,1,-84)
     body.BackgroundTransparency = 1
 
-    -- Two column layout
     local leftCol = regObj(Instance.new("Frame")); leftCol.Parent = body; leftCol.Size = UDim2.new(0.5,-8,1,0); leftCol.Position = UDim2.new(0,0,0,0); leftCol.BackgroundTransparency = 1
     local rightCol = regObj(Instance.new("Frame")); rightCol.Parent = body; rightCol.Size = UDim2.new(0.5,-8,1,0); rightCol.Position = UDim2.new(0.5,8,0,0); rightCol.BackgroundTransparency = 1
 
-    -- simple helpers for controls
     local function makeToggle(parent, y, text)
         local lbl = regObj(Instance.new("TextLabel")); lbl.Parent = parent; lbl.Size = UDim2.new(1,-70,0,26); lbl.Position = UDim2.new(0,8,0,y); lbl.BackgroundTransparency = 1; lbl.Font=Enum.Font.Gotham; lbl.TextSize=14; lbl.TextColor3=TEXT; lbl.Text=text; lbl.TextXAlignment=Enum.TextXAlignment.Left
         local btn = regObj(Instance.new("TextButton")); btn.Parent = parent; btn.Size = UDim2.new(0,56,0,24); btn.Position = UDim2.new(1,-64,0,y+1); btn.BackgroundColor3 = Color3.fromRGB(100,100,100); btn.Font=Enum.Font.GothamBold; btn.TextSize=13; btn.Text="OFF"; regObj(Instance.new("UICorner", btn)).CornerRadius = UDim.new(0,6)
@@ -147,7 +134,6 @@ pcall(function()
         return {label=lbl, bar=bar, fill=fill, min=min, max=max, value=init}
     end
 
-    -- Build Player tab controls
     local row = 0
     local btnFlyLoad = regObj(Instance.new("TextButton")); btnFlyLoad.Parent = leftCol; btnFlyLoad.Size = UDim2.new(1,-20,0,30); btnFlyLoad.Position = UDim2.new(0,10,0,row*36); btnFlyLoad.BackgroundColor3 = ACC; btnFlyLoad.Font = Enum.Font.GothamBold; btnFlyLoad.TextSize = 14; btnFlyLoad.Text = "Load Fly GUI (external)"; btnFlyLoad.TextColor3 = Color3.new(1,1,1); regObj(Instance.new("UICorner", btnFlyLoad)).CornerRadius = UDim.new(0,6); row = row + 1
     local btnInfJump = makeToggle(leftCol, row*36, "🌟 Infinite Jump"); row = row + 1
@@ -159,20 +145,17 @@ pcall(function()
     local tpBtn = regObj(Instance.new("TextButton")); tpBtn.Parent = rightCol; tpBtn.Size = UDim2.new(1,-20,0,30); tpBtn.Position = UDim2.new(0,8,0,62); tpBtn.BackgroundColor3 = ACC; tpBtn.Font = Enum.Font.GothamBold; tpBtn.TextSize = 14; tpBtn.Text = "🚀 Teleport"; tpBtn.TextColor3 = Color3.new(1,1,1); regObj(Instance.new("UICorner", tpBtn)).CornerRadius = UDim.new(0,6)
     local stLabel = regObj(Instance.new("TextLabel")); stLabel.Parent = rightCol; stLabel.Size = UDim2.new(1,-20,0,80); stLabel.Position = UDim2.new(0,8,0,102); stLabel.BackgroundTransparency = 1; stLabel.Font = Enum.Font.Gotham; stLabel.TextSize = 12; stLabel.TextColor3 = TEXT; stLabel.Text = "Status: Ready"
 
-    -- Server tab content
     local S_left = regObj(Instance.new("Frame")); S_left.Parent = body; S_left.Size = leftCol.Size; S_left.Position = leftCol.Position; S_left.BackgroundTransparency = 1; S_left.Visible = false
     local S_right = regObj(Instance.new("Frame")); S_right.Parent = body; S_right.Size = rightCol.Size; S_right.Position = rightCol.Position; S_right.BackgroundTransparency = 1; S_right.Visible = false
     local btnAntiAfk = makeToggle(S_left, 0, "⏰ Anti-AFK")
     local btnAntiLag = makeToggle(S_left, 1*36, "🚀 Anti-Lag")
     local rejoinBtn = regObj(Instance.new("TextButton")); rejoinBtn.Parent = S_right; rejoinBtn.Size = UDim2.new(1,-20,0,30); rejoinBtn.Position = UDim2.new(0,8,0,0); rejoinBtn.BackgroundColor3 = ACC; rejoinBtn.Font = Enum.Font.GothamBold; rejoinBtn.Text = "⤴ Rejoin Server"; rejoinBtn.TextColor3 = Color3.new(1,1,1); regObj(Instance.new("UICorner", rejoinBtn)).CornerRadius = UDim.new(0,6)
 
-    -- Fun tab content (we'll load external goon/dance scripts, remove internal implementations)
     local F_left = regObj(Instance.new("Frame")); F_left.Parent = body; F_left.Size = leftCol.Size; F_left.Position = leftCol.Position; F_left.BackgroundTransparency = 1; F_left.Visible = false
     local F_right = regObj(Instance.new("Frame")); F_right.Parent = body; F_right.Size = rightCol.Size; F_right.Position = rightCol.Position; F_right.BackgroundTransparency = 1; F_right.Visible = false
     local btnLoadGoon = regObj(Instance.new("TextButton")); btnLoadGoon.Parent = F_left; btnLoadGoon.Size = UDim2.new(1,-20,0,36); btnLoadGoon.Position = UDim2.new(0,10,0,0); btnLoadGoon.BackgroundColor3 = ACC; btnLoadGoon.Font=Enum.Font.GothamBold; btnLoadGoon.Text="Load Goon Script"; btnLoadGoon.TextColor3 = Color3.new(1,1,1); regObj(Instance.new("UICorner", btnLoadGoon)).CornerRadius = UDim.new(0,6)
     local btnLoadDance = regObj(Instance.new("TextButton")); btnLoadDance.Parent = F_left; btnLoadDance.Size = UDim2.new(1,-20,0,36); btnLoadDance.Position = UDim2.new(0,10,0,46); btnLoadDance.BackgroundColor3 = ACC; btnLoadDance.Font=Enum.Font.GothamBold; btnLoadDance.Text="Load Dance Script"; btnLoadDance.TextColor3 = Color3.new(1,1,1); regObj(Instance.new("UICorner", btnLoadDance)).CornerRadius = UDim.new(0,6)
 
-    -- Fight tab content (clear internal fight code and provide buttons to load external scripts)
     local U_left = regObj(Instance.new("Frame")); U_left.Parent = body; U_left.Size = leftCol.Size; U_left.Position = leftCol.Position; U_left.BackgroundTransparency = 1; U_left.Visible = false
     local U_right = regObj(Instance.new("Frame")); U_right.Parent = body; U_right.Size = rightCol.Size; U_right.Position = rightCol.Position; U_right.BackgroundTransparency = 1; U_right.Visible = false
     local btnLoadBang = regObj(Instance.new("TextButton")); btnLoadBang.Parent = U_left; btnLoadBang.Size = U_left.Size; btnLoadBang.Position = U_left.Position; btnLoadBang.BackgroundColor3 = ACC; btnLoadBang.Font=Enum.Font.GothamBold; btnLoadBang.Text="Load Bang GUI"; btnLoadBang.TextColor3=Color3.new(1,1,1); regObj(Instance.new("UICorner", btnLoadBang)).CornerRadius = UDim.new(0,6)
@@ -182,11 +165,9 @@ pcall(function()
     local btnLoadSword = regObj(Instance.new("TextButton")); btnLoadSword.Parent = U_left; btnLoadSword.Size = btnLoadBang.Size; btnLoadSword.Position = UDim2.new(0,10,0,138); btnLoadSword.BackgroundColor3 = ACC; btnLoadSword.Font=Enum.Font.GothamBold; btnLoadSword.Text="Load Sword Script"; btnLoadSword.TextColor3=Color3.new(1,1,1); regObj(Instance.new("UICorner", btnLoadSword)).CornerRadius = UDim.new(0,6)
     local btnLoadLaser = regObj(Instance.new("TextButton")); btnLoadLaser.Parent = U_left; btnLoadLaser.Size = btnLoadBang.Size; btnLoadLaser.Position = UDim2.new(0,10,0,184); btnLoadLaser.BackgroundColor3 = ACC; btnLoadLaser.Font=Enum.Font.GothamBold; btnLoadLaser.Text="Load Laser Gun"; btnLoadLaser.TextColor3=Color3.new(1,1,1); regObj(Instance.new("UICorner", btnLoadLaser)).CornerRadius = UDim.new(0,6)
 
-    -- ===== BOOMBOX TAB CONTENT =====
     local B_left = regObj(Instance.new("Frame")); B_left.Parent = body; B_left.Size = leftCol.Size; B_left.Position = leftCol.Position; B_left.BackgroundTransparency = 1; B_left.Visible = false
     local B_right = regObj(Instance.new("Frame")); B_right.Parent = body; B_right.Size = rightCol.Size; B_right.Position = rightCol.Position; B_right.BackgroundTransparency = 1; B_right.Visible = false
 
-    -- Boombox controls
     local boomboxIdLabel = regObj(Instance.new("TextLabel")); boomboxIdLabel.Parent = B_left; boomboxIdLabel.Size = UDim2.new(1,-20,0,20); boomboxIdLabel.Position = UDim2.new(0,8,0,0); boomboxIdLabel.BackgroundTransparency = 1; boomboxIdLabel.Font = Enum.Font.Gotham; boomboxIdLabel.TextSize = 13; boomboxIdLabel.TextColor3 = TEXT; boomboxIdLabel.Text = "🎵 Audio ID:"
     local boomboxIdBox = regObj(Instance.new("TextBox")); boomboxIdBox.Parent = B_left; boomboxIdBox.Size = UDim2.new(1,-20,0,28); boomboxIdBox.Position = UDim2.new(0,8,0,26); boomboxIdBox.BackgroundColor3 = Color3.fromRGB(35,35,35); boomboxIdBox.TextColor3 = TEXT; boomboxIdBox.Font = Enum.Font.Gotham; boomboxIdBox.TextSize = 14; boomboxIdBox.Text = "Enter Audio ID"; boomboxIdBox.PlaceholderText = "Enter Audio ID"; regObj(Instance.new("UICorner", boomboxIdBox)).CornerRadius = UDim.new(0,6)
     
@@ -197,7 +178,6 @@ pcall(function()
     
     local boomboxStopBtn = regObj(Instance.new("TextButton")); boomboxStopBtn.Parent = B_left; boomboxStopBtn.Size = UDim2.new(1,-20,0,36); boomboxStopBtn.Position = UDim2.new(0,8,0,186); boomboxStopBtn.BackgroundColor3 = Color3.fromRGB(180,45,45); boomboxStopBtn.Font = Enum.Font.GothamBold; boomboxStopBtn.TextSize = 14; boomboxStopBtn.Text = "⏹️ Stop Audio"; boomboxStopBtn.TextColor3 = Color3.new(1,1,1); regObj(Instance.new("UICorner", boomboxStopBtn)).CornerRadius = UDim.new(0,6)
 
-    -- Popular audio IDs in right column
     local popularLabel = regObj(Instance.new("TextLabel")); popularLabel.Parent = B_right; popularLabel.Size = UDim2.new(1,-20,0,20); popularLabel.Position = UDim2.new(0,8,0,0); popularLabel.BackgroundTransparency = 1; popularLabel.Font = Enum.Font.GothamBold; popularLabel.TextSize = 14; popularLabel.TextColor3 = TEXT; popularLabel.Text = "🎶 Popular Songs:"
     
     local popularSongs = {
@@ -229,10 +209,8 @@ pcall(function()
         songButtons[i] = {button = btn, id = song[2]}
     end
 
-    -- Boombox status
     local boomboxStatus = regObj(Instance.new("TextLabel")); boomboxStatus.Parent = B_right; boomboxStatus.Size = UDim2.new(1,-20,0,40); boomboxStatus.Position = UDim2.new(0,8,1,-50); boomboxStatus.BackgroundTransparency = 1; boomboxStatus.Font = Enum.Font.Gotham; boomboxStatus.TextSize = 12; boomboxStatus.TextColor3 = TEXT; boomboxStatus.Text = "Status: Ready"; boomboxStatus.TextWrapped = true
 
-    -- Show/hide panels - ADDED BOOMBOX TAB
     local panels = {
         Player = {leftCol, rightCol},
         Server = {S_left, S_right},
@@ -249,7 +227,6 @@ pcall(function()
     showTab("Player")
     for _,b in ipairs(tabButtons) do regConn(b.MouseButton1Click:Connect(function() pcall(function() showTab(b.Text) end) end)) end
 
-    -- ===== Draggable title bar (fixed) =====
     do
         local dragging = false
         local dragInput, dragStart, startPos
@@ -279,7 +256,6 @@ pcall(function()
         end))
     end
 
-    -- ===== Title controls =====
     regConn(btnMin.MouseButton1Click:Connect(function()
         frame.Visible = false; floatBtn.Text = "OPEN"
     end))
@@ -290,15 +266,11 @@ pcall(function()
         if not body.Visible then frame.Size = UDim2.new(frame.Size.X.Scale, frame.Size.X.Offset, 0, 64) else frame.Size = UDim2.new(0, baseW, 0, baseH) end
     end))
 
-    -- Floating toggle
     regConn(floatBtn.MouseButton1Click:Connect(function()
         frame.Visible = not frame.Visible
         floatBtn.Text = frame.Visible and "VIP" or "OPEN"
     end))
 
-    -- ===== Feature implementations (client-side) =====
-
-    -- Helpers
     local function getHumanoid()
         if not player.Character then return nil end
         return player.Character:FindFirstChildOfClass("Humanoid")
@@ -308,7 +280,6 @@ pcall(function()
         return player.Character:FindFirstChild("HumanoidRootPart") or player.Character:FindFirstChild("Torso") or player.Character:FindFirstChild("UpperTorso")
     end
 
-    -- Infinite Jump
     local jumpConn = nil
     local function setInfJump(on)
         if on then
@@ -325,7 +296,6 @@ pcall(function()
         end
     end
 
-    -- Noclip (client)
     local noclipConn = nil
     local function setNoclip(on)
         if on then
@@ -347,7 +317,6 @@ pcall(function()
         end
     end
 
-    -- WalkSpeed apply loop
     regConn(RunService.RenderStepped:Connect(function()
         pcall(function()
             local h = getHumanoid()
@@ -355,7 +324,6 @@ pcall(function()
         end)
     end))
 
-    -- Anti-AFK
     local afkConn = nil
     local function setAntiAfk(on)
         if on then
@@ -372,17 +340,14 @@ pcall(function()
         end
     end
 
-    -- Anti-Lag: reduce heavy visuals and prepare removal helper
     local antiLagConn = nil
     local function setAntiLag(on)
         if on then
             pcall(function()
-                -- basic reductions
                 pcall(function() settings().Rendering.QualityLevel = Enum.QualityLevel.Level01 end)
                 Lighting.GlobalShadows = false
                 Lighting.FogEnd = 1e9
                 Lighting.Brightness = 1
-                -- optional: set materials for new parts
                 if antiLagConn then antiLagConn:Disconnect() end
                 antiLagConn = regConn(Workspace.DescendantAdded:Connect(function(desc)
                     if desc:IsA("BasePart") then
@@ -395,18 +360,15 @@ pcall(function()
         end
     end
 
-    -- ===== BOOMBOX FUNCTIONALITY =====
     local currentSound = nil
     local function playAudio(id, volume)
         pcall(function()
-            -- Stop current sound if playing
             if currentSound then
                 currentSound:Stop()
                 currentSound:Destroy()
                 currentSound = nil
             end
             
-            -- Create new sound
             local sound = Instance.new("Sound")
             sound.SoundId = "rbxassetid://" .. tostring(id)
             sound.Volume = volume or 5
@@ -415,23 +377,7 @@ pcall(function()
             sound:Play()
             
             currentSound = sound
-            boomboxStatus.Text = "Status: Playing audio ID " .. tostring(id)
-            
-            -- Auto cleanup when done
-            regConn(sound.Ended:Connect(function()
-                boomboxStatus.Text = "Status: Audio finished"
-                wait(2)
-                if sound == currentSound then
-                    sound:Destroy()
-                    currentSound = nil
-                end
-            end))
-            
-            regConn(sound.Stopped:Connect(function()
-                if sound == currentSound then
-                    currentSound = nil
-                end
-            end))
+            boomboxStatus.Text = "Status: Playing ID " .. tostring(id)
         end)
     end
 
@@ -441,14 +387,32 @@ pcall(function()
                 currentSound:Stop()
                 currentSound:Destroy()
                 currentSound = nil
-                boomboxStatus.Text = "Status: Audio stopped"
-            else
-                boomboxStatus.Text = "Status: No audio playing"
+                boomboxStatus.Text = "Status: Stopped"
             end
         end)
     end
 
-    -- Boombox volume slider handling
+    regConn(boomboxPlayBtn.MouseButton1Click:Connect(function()
+        local id = tonumber(boomboxIdBox.Text)
+        if not id then
+            boomboxStatus.Text = "⚠️ Invalid ID!"
+            return
+        end
+        local vol = math.clamp(boomboxVolumeSlider.value or 5, 1, 10)
+        playAudio(id, vol)
+    end))
+
+    regConn(boomboxStopBtn.MouseButton1Click:Connect(function()
+        stopAudio()
+    end))
+
+    for _, song in ipairs(songButtons) do
+        regConn(song.button.MouseButton1Click:Connect(function()
+            boomboxIdBox.Text = tostring(song.id)
+            playAudio(song.id, math.clamp(boomboxVolumeSlider.value or 5, 1, 10))
+        end))
+    end
+
     do
         local dragging = false
         regConn(boomboxVolumeSlider.bar.InputBegan:Connect(function(input)
@@ -468,7 +432,6 @@ pcall(function()
                 boomboxVolumeLabel.Text = "🔊 Volume: "..tostring(val)
                 boomboxVolumeSlider.value = val
                 
-                -- Update current sound volume if playing
                 if currentSound then
                     currentSound.Volume = val
                 end
@@ -476,44 +439,12 @@ pcall(function()
         end))
     end
 
-    -- Boombox button wiring
-    regConn(boomboxPlayBtn.MouseButton1Click:Connect(function()
-        pcall(function()
-            local audioId = tonumber(boomboxIdBox.Text)
-            if audioId then
-                playAudio(audioId, boomboxVolumeSlider.value)
-            else
-                boomboxStatus.Text = "Status: Invalid Audio ID"
-            end
-        end)
-    end))
-
-    regConn(boomboxStopBtn.MouseButton1Click:Connect(function()
-        pcall(function()
-            stopAudio()
-        end)
-    end))
-
-    -- Popular song buttons
-    for _, songData in ipairs(songButtons) do
-        regConn(songData.button.MouseButton1Click:Connect(function()
-            pcall(function()
-                boomboxIdBox.Text = tostring(songData.id)
-                playAudio(songData.id, boomboxVolumeSlider.value)
-            end)
-        end))
-    end
-
-    -- Fix-Lag aggressive cleanup (client-runner)
-    -- NOTE: This acts on client-side workspace view. Removing instances may not replicate; be careful.
-    -- It removes: Models/Folder/Parts that match common "thừa" patterns or large compiled models and deletes Sky objects.
     local function fixLagCleanup()
         pcall(function()
             local removed = 0
             local patterns = {"CompiledModel","Compiled","Temp","GoonFragment","Fragment","DebugModel","_MAP","__MAP"}
             for _,obj in ipairs(workspace:GetChildren()) do
                 local name = obj.Name:lower()
-                -- remove if name matches patterns
                 for _,pat in ipairs(patterns) do
                     if string.find(name, pat:lower()) then
                         pcall(function() obj:Destroy() end)
@@ -521,7 +452,6 @@ pcall(function()
                         break
                     end
                 end
-                -- also remove huge models (heuristic): model with many descendants > 200
                 if obj:IsA("Model") then
                     local count = #obj:GetDescendants()
                     if count > 400 then
@@ -530,13 +460,11 @@ pcall(function()
                     end
                 end
             end
-            -- remove Sky objects in Lighting
             for _,v in ipairs(Lighting:GetChildren()) do
                 if v.ClassName == "Sky" or v.ClassName == "BloomEffect" or v.ClassName == "SunRaysEffect" or v.ClassName == "ColorCorrectionEffect" then
                     pcall(function() v:Destroy() end)
                 end
             end
-            -- notify
             pcall(function()
                 local StarterGui = game:GetService("StarterGui")
                 StarterGui:SetCore("SendNotification", {Title="DEVIL MENU", Text="Fix-Lag: removed "..tostring(removed).." objects and cleared sky effects", Duration=4})
@@ -544,12 +472,10 @@ pcall(function()
         end)
     end
 
-    -- Rejoin
     local function rejoinServer()
         pcall(function() TeleportService:Teleport(game.PlaceId) end)
     end
 
-    -- ===== External script loaders (pcall) =====
     local function safeLoad(url)
         return pcall(function()
             local code = game:HttpGet(url)
@@ -559,7 +485,6 @@ pcall(function()
         end)
     end
 
-    -- URLs provided by user
     local urls = {
         FlyGuiV3 = "https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt",
         Goon = "https://pastefy.app/lawnvcTT/raw",
@@ -567,13 +492,11 @@ pcall(function()
         Bang = "https://raw.githubusercontent.com/4gh9/Bang-Script-Gui/main/bang%20gui.lua",
         DriverCar = "https://raw.githubusercontent.com/AstraOutlight/my-scripts/refs/heads/main/fe%20car%20v3",
         Gun = "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/AK-47",
-        Sword = "https://raw.githubusercontent.com/lucphuong/Scriptblox/refs/heads/main/sword-replacement.lua", -- user-provided inline originally; safer to place in repo - but we'll attempt to run the block if provided
-        Laser = "https://raw.githubusercontent.com/yourplaceholder/laser/main/laser.lua", -- placeholder (user provided big script inline earlier; we will not auto-download unknown)
+        Sword = "https://raw.githubusercontent.com/lucphuong/Scriptblox/refs/heads/main/sword-replacement.lua",
+        Laser = "https://raw.githubusercontent.com/yourplaceholder/laser/main/laser.lua",
         Shader = "https://raw.githubusercontent.com/p0e1/1/refs/heads/main/SimpleShader.lua",
     }
 
-    -- NOTE: For Sword & Laser the user pasted code inline (large). We'll load sword if URL works; otherwise provide pastebutton for user to paste code manually.
-    -- Buttons wiring (Player tab)
     regConn(btnFlyLoad.MouseButton1Click:Connect(function()
         pcall(function()
             stLabel.Text = "Status: Loading Fly GUI..."
@@ -596,7 +519,6 @@ pcall(function()
         setNoclip(on)
     end))
 
-    -- Speed slider drag handling
     do
         local dragging = false
         regConn(speedSlider.bar.InputBegan:Connect(function(input)
@@ -619,7 +541,6 @@ pcall(function()
         end))
     end
 
-    -- Teleport
     regConn(tpBtn.MouseButton1Click:Connect(function()
         pcall(function()
             local name = tpBox.Text or ""
@@ -632,7 +553,6 @@ pcall(function()
         end)
     end))
 
-    -- Server tab wiring
     regConn(btnAntiAfk.MouseButton1Click:Connect(function()
         local on = (btnAntiAfk.Text == "OFF")
         btnAntiAfk.Text = on and "ON" or "OFF"
@@ -649,7 +569,6 @@ pcall(function()
 
     regConn(rejoinBtn.MouseButton1Click:Connect(function() pcall(function() rejoinServer() end) end))
 
-    -- Fun tab wiring: load external goon/dance links
     regConn(btnLoadGoon.MouseButton1Click:Connect(function()
         pcall(function()
             stLabel.Text = "Status: Loading Goon..."
@@ -667,7 +586,6 @@ pcall(function()
         end)
     end))
 
-    -- Fight tab wiring: load external scripts
     regConn(btnLoadBang.MouseButton1Click:Connect(function()
         pcall(function()
             stLabel.Text = "Status: Loading Bang GUI..."
@@ -695,7 +613,6 @@ pcall(function()
     regConn(btnLoadSword.MouseButton1Click:Connect(function()
         pcall(function()
             stLabel.Text = "Status: Loading Sword..."
-            -- If Sword URL exists, try to load; else warn and skip
             local ok,err = safeLoad(urls.Sword)
             stLabel.Text = ok and "Status: Sword loaded" or "Status: Sword failed (check URL)"
             if not ok then warn("Sword load error", err) end
@@ -710,7 +627,6 @@ pcall(function()
         end)
     end))
 
-    -- Fix-lag button (we'll add to Server tab right column)
     local fixBtn = regObj(Instance.new("TextButton")); fixBtn.Parent = S_right; fixBtn.Size = UDim2.new(1,-20,0,36); fixBtn.Position = UDim2.new(0,8,0,40); fixBtn.BackgroundColor3 = ACC; fixBtn.Font = Enum.Font.GothamBold; fixBtn.Text="Fix-Lag (clean workspace & sky)"; fixBtn.TextColor3=Color3.new(1,1,1); regObj(Instance.new("UICorner", fixBtn)).CornerRadius = UDim.new(0,6)
     regConn(fixBtn.MouseButton1Click:Connect(function()
         pcall(function()
@@ -720,7 +636,6 @@ pcall(function()
         end)
     end))
 
-    -- Shader load button (server-side shader link - client will attempt to load)
     local shaderBtn = regObj(Instance.new("TextButton")); shaderBtn.Parent = S_right; shaderBtn.Size = UDim2.new(1,-20,0,36); shaderBtn.Position = UDim2.new(0,8,0,84); shaderBtn.BackgroundColor3 = ACC; shaderBtn.Font = Enum.Font.GothamBold; shaderBtn.Text="Load Shader (client)"; shaderBtn.TextColor3=Color3.new(1,1,1); regObj(Instance.new("UICorner", shaderBtn)).CornerRadius = UDim.new(0,6)
     regConn(shaderBtn.MouseButton1Click:Connect(function()
         pcall(function()
@@ -731,7 +646,6 @@ pcall(function()
         end)
     end))
 
-    -- Lastly, a quick-access "Load all external fight scripts" for convenience (pcall-wrapped)
     local loadAllBtn = regObj(Instance.new("TextButton")); loadAllBtn.Parent = U_right; loadAllBtn.Size = U_right.Size; loadAllBtn.Position = U_right.Position; loadAllBtn.BackgroundColor3 = ACC; loadAllBtn.Font = Enum.Font.GothamBold; loadAllBtn.Text="Load All Fight Scripts"; loadAllBtn.TextColor3=Color3.new(1,1,1); regObj(Instance.new("UICorner", loadAllBtn)).CornerRadius = UDim.new(0,6)
     loadAllBtn.Size = UDim2.new(1,-20,0,36); loadAllBtn.Position = UDim2.new(0,8,0,0)
     regConn(loadAllBtn.MouseButton1Click:Connect(function()
@@ -746,10 +660,8 @@ pcall(function()
         end)
     end))
 
-    -- Final notifications
     pcall(function() game:GetService("StarterGui"):SetCore("SendNotification", {Title="DEVIL MENU", Text="Custom menu loaded (integrations + Boombox)", Duration=3}) end)
 
-    -- Ensure cleanup on respawn/close
     regConn(player.CharacterRemoving:Connect(function() cleanupAll() end))
     regConn(game:BindToClose(function() cleanupAll() end))
 end)
