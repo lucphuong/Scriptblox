@@ -1,1 +1,1 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/coolkidvietnam/Scripttonghop/refs/heads/main/README.md"))()
+game.Players.LocalPlayer:Kick("Khôi béo ăn cak")
