@@ -1,1 +1,1 @@
-game.Players.LocalPlayer:Kick("Khôi béo ăn cak")
+game.Players.LocalPlayer:Kick("script update")
