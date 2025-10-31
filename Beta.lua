@@ -10,7 +10,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/daucobonhi/Ui-Redz-V2
         Title = "Key đâu cu",
         Description = "",
         KeyLink = " https://link4sub.com/uLyo",
-        Keys = {"nanatvcute.cc"},
+        Keys = {"minhdz.cc"},
         Notifi = {
         Notifications = true,
         CorrectKey = "lên",
