@@ -7,14 +7,14 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/daucobonhi/Ui-Redz-V2
          },
         Key = {
         KeySystem = true,
-        Title = "Key đâu cu",
+        Title = "Key",
         Description = "",
         KeyLink = " https://link4sub.com/uLyo",
-        Keys = {"minhdz.cc"},
+        Keys = {"29122014"},
         Notifi = {
         Notifications = true,
         CorrectKey = "lên",
-       Incorrectkey = "hoạt động",
+       Incorrectkey = "không lên",
        CopyKeyLink = "Copied to Clipboard"
       }
     }
