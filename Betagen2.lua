@@ -2,7 +2,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/daucobonhi/Ui-Redz-V2
 
        local Window = MakeWindow({
          Hub = {
-         Tittle = "Minh hub beta",
+         Tittle = "Minhxhub",
          Animation = "Đang lên"
          },
         Key = {
