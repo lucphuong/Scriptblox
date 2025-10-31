@@ -1,4 +1,4 @@
-loadstring(game:HttpGet(("https://raw.githubusercontent.com/daucobonhi/Ui-Redz-V2/refs/heads/main/UiREDzV2.lua")))()
+loadstring(game:HttpGet(("https://raw.githubusercontent.com/daucobonhi/Ui-Redz-V2/refs/heads/main/UiREDzV2.lua"))()
 
        local Window = MakeWindow({
          Hub = {
@@ -13,7 +13,7 @@ loadstring(game:HttpGet(("https://raw.githubusercontent.com/daucobonhi/Ui-Redz-V
         Keys = {"nanatvcute.cc"},
         Notifi = {
         Notifications = true,
-        Correloadstring = "lên",
+        CorrectKey = "lên",
        Incorrectkey = "The key chạy",
        CopyKeyLink = "Copied to Clipboard"
       }
