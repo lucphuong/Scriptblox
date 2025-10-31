@@ -14,7 +14,7 @@ loadstring(game:HttpGet(("https://raw.githubusercontent.com/daucobonhi/Ui-Redz-V
         Notifi = {
         Notifications = true,
         CorrectKey = "lên",
-       Incorrectkey = "The key chạy",
+       Incorrectkey = "False",
        CopyKeyLink = "Copied to Clipboard"
       }
     }
