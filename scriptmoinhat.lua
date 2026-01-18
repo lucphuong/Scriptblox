@@ -10922,21 +10922,29 @@ Window:SelectTab(1)
 local ScreenGui = Instance.new("ScreenGui")
 local ImageButton = Instance.new("ImageButton")
 local UICorner = Instance.new("UICorner")
+
 local TweenService = game:GetService("TweenService")
 local VIM = game:GetService("VirtualInputManager")
+
 ScreenGui.Parent = game.CoreGui
+ScreenGui.ResetOnSpawn = false
+ScreenGui.IgnoreGuiInset = true
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
 ImageButton.Parent = ScreenGui
 ImageButton.Size = UDim2.new(0, 55, 0, 55)
 ImageButton.Position = UDim2.new(0.02, 0, 0.2, 0)
 ImageButton.BackgroundColor3 = Color3.fromRGB(0,0,0)
 ImageButton.BorderSizePixel = 0
 ImageButton.Image = "http://www.roblox.com/asset/?id=71014873973869"
-ImageButton.Active = true
-ImageButton.Draggable = true
 ImageButton.AutoButtonColor = true
+ImageButton.ZIndex = 999
+ImageButton.Active = true
+ImageButton.Draggable = false
+
 UICorner.Parent = ImageButton
 UICorner.CornerRadius = UDim.new(0, 12)
+
 local function PlayRotate()
 	ImageButton.Rotation = 0
 	TweenService:Create(
@@ -10945,14 +10953,18 @@ local function PlayRotate()
 		{Rotation = 360}
 	):Play()
 end
+
 local debounce = false
 ImageButton.Activated:Connect(function()
 	if debounce then return end
 	debounce = true
+
 	PlayRotate()
+
 	VIM:SendKeyEvent(true, Enum.KeyCode.End, false, game)
 	task.wait(0.06)
 	VIM:SendKeyEvent(false, Enum.KeyCode.End, false, game)
+
 	task.wait(0.25)
 	debounce = false
 end)
